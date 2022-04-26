@@ -1,4 +1,6 @@
-﻿using Datos.Interfaces;
+﻿using Dapper;
+using Datos.Interfaces;
+using Modelos;
 using MySql.Data.MySqlClient;
 using System;
 using System.Collections.Generic;
@@ -8,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace Datos.Repositorios;
 
-    internal class UsuarioRepositorio : IUsuarioRepositorio
-    {
+    public class UsuarioRepositorio : IUsuarioRepositorio
+
+{
     private string CadenaConexion;
 
     public UsuarioRepositorio(string cadenaConexion)
@@ -22,6 +25,36 @@ namespace Datos.Repositorios;
         return new MySqlConnection(CadenaConexion);
     }
 
+    public async Task<bool> ValidaUsuario(Login login)
+    {
+        bool valido = false;
+        try
+        {
+            using MySqlConnection conexion = Conexion();
+            await conexion.OpenAsync();
+            string sql = "SELECT 1 FROM usuario WHERE Codigo = @Codigo AND Clave = @Clave;";
+            valido = await conexion.ExecuteScalarAsync<bool>(sql, new { login.Codigo, login.Clave });
+        }
+        catch (Exception ex)
+        {
+        }
+        return valido;
+    }
 
+    public async Task<Usuario> GetPorCodigo(string codigo)
+    {
+        Usuario user = new Usuario();
+        try
+        {
+            using MySqlConnection conexion = Conexion();
+            await conexion.OpenAsync();
+            string sql = "SELECT * FROM usuario WHERE Codigo = @Codigo;";
+            user = await conexion.QueryFirstAsync<Usuario>(sql, new { codigo });
+        }
+        catch (Exception)
+        {
+        }
+        return user;
+    }
 }
 

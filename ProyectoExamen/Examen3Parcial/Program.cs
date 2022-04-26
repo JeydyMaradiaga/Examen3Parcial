@@ -1,4 +1,5 @@
 using Examen3Parcial.Data;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 
@@ -11,6 +12,9 @@ builder.Services.AddSingleton<WeatherForecastService>();
 
 MySQLConfiguration cadenaConexion = new MySQLConfiguration(builder.Configuration.GetConnectionString("MySQL"));
 builder.Services.AddSingleton(cadenaConexion);
+
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 
@@ -28,7 +32,12 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
+app.UseAuthorization();
+
 app.MapBlazorHub();
+app.MapControllers();
+
 app.MapFallbackToPage("/_Host");
 
 app.Run();
