@@ -1,4 +1,6 @@
 using Examen3Parcial.Data;
+using Examen3Parcial.Interfaces;
+using Examen3Parcial.Servicios;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
@@ -13,8 +15,10 @@ builder.Services.AddSingleton<WeatherForecastService>();
 MySQLConfiguration cadenaConexion = new MySQLConfiguration(builder.Configuration.GetConnectionString("MySQL"));
 builder.Services.AddSingleton(cadenaConexion);
 
+builder.Services.AddScoped<IUsuarioServicio, UsuarioServicio>();
+
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme).AddCookie();
-builder.Services.AddHttpContextAccessor();
+
 
 var app = builder.Build();
 

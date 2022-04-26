@@ -1,5 +1,5 @@
-﻿namespace Examen3Parcial.Data
-{
+﻿namespace Examen3Parcial.Data;
+
     public class MySQLConfiguration
     {
         public string CadenaConexion { get; }
@@ -10,4 +10,4 @@
         }
 
     }
-}
+

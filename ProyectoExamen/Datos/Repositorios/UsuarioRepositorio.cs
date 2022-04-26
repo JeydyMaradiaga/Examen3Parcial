@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Datos.Repositorios;
 
-    public class UsuarioRepositorio : IUsuarioRepositorio
+public class UsuarioRepositorio : IUsuarioRepositorio
 
 {
     private string CadenaConexion;
@@ -23,6 +23,23 @@ namespace Datos.Repositorios;
     private MySqlConnection Conexion()
     {
         return new MySqlConnection(CadenaConexion);
+    }
+
+
+    public async Task<Usuario> GetPorCodigo(string codigo)
+    {
+        Usuario user = new Usuario();
+        try
+        {
+            using MySqlConnection conexion = Conexion();
+            await conexion.OpenAsync();
+            string sql = "SELECT * FROM usuario WHERE Codigo = @Codigo;";
+            user = await conexion.QueryFirstAsync<Usuario>(sql, new { codigo });
+        }
+        catch (Exception)
+        {
+        }
+        return user;
     }
 
     public async Task<bool> ValidaUsuario(Login login)
@@ -39,22 +56,6 @@ namespace Datos.Repositorios;
         {
         }
         return valido;
-    }
-
-    public async Task<Usuario> GetPorCodigo(string codigo)
-    {
-        Usuario user = new Usuario();
-        try
-        {
-            using MySqlConnection conexion = Conexion();
-            await conexion.OpenAsync();
-            string sql = "SELECT * FROM usuario WHERE Codigo = @Codigo;";
-            user = await conexion.QueryFirstAsync<Usuario>(sql, new { codigo });
-        }
-        catch (Exception)
-        {
-        }
-        return user;
     }
 }
 
